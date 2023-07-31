@@ -11,7 +11,7 @@ export class PortfoliocdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // express server lambda, api gateway
+    /// express server lambda, api gateway
     const expressServerLambda = new lambda.Function(this, "express-server-handler", {
       runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset(path.join(__dirname, "../../backend/dist/")),
@@ -22,7 +22,7 @@ export class PortfoliocdkStack extends cdk.Stack {
 
     expressServerLambda.addToRolePolicy(new PolicyStatement({
       actions: ["s3:*", "s3-object-lambda:*"],
-      resources: ["arn:aws:s3:::portfolio-bucket-albert"]
+      resources: ["*"]
     }));
 
     const api = new apigateway.RestApi(this, "portfolio-backend", {
@@ -37,7 +37,7 @@ export class PortfoliocdkStack extends cdk.Stack {
     api.root.addResource("githubcontribution").addMethod("GET", apiGateway); // GET 
     api.root.addResource("projects").addMethod("GET", apiGateway); // GET 
 
-    // background lambda, event rule
+    /// background lambda, event rule
     const backgroundLambda = new lambda.Function(this, "background-handler", {
       runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset(path.join(__dirname, "../../background/dist/")),
@@ -48,7 +48,7 @@ export class PortfoliocdkStack extends cdk.Stack {
 
     backgroundLambda.addToRolePolicy(new PolicyStatement({
       actions: ["s3:*", "s3-object-lambda:*"],
-      resources: ["arn:aws:s3:::portfolio-bucket-albert"]
+      resources: ["*"]
     }));
 
     const eventRule = new events.Rule(this, 'background-trigger-timer', {
