@@ -42,17 +42,17 @@ export class PortfoliocdkStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset(path.join(__dirname, "../../background/dist/")),
       handler: "index_prod.handler",
-      environment: {
-      }
+      memorySize: 256,
+      timeout: cdk.Duration.seconds(15),
     });
 
     backgroundLambda.addToRolePolicy(new PolicyStatement({
       actions: ["s3:*", "s3-object-lambda:*"],
-      resources: ["*"]
+      resources: ["*"],
     }));
 
     const eventRule = new events.Rule(this, 'background-trigger-timer', {
-      schedule: events.Schedule.cron({ minute: '0', hour: '1' }),
+      schedule: events.Schedule.rate(cdk.Duration.hours(1)),
     });
     eventRule.addTarget(new targets.LambdaFunction(backgroundLambda))
   }
