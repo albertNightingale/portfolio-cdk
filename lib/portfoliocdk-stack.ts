@@ -36,6 +36,7 @@ export class PortfoliocdkStack extends cdk.Stack {
 
     api.root.addResource("githubcontribution").addMethod("GET", apiGateway); // GET 
     api.root.addResource("projects").addMethod("GET", apiGateway); // GET 
+    api.root.addResource("pastexperiences").addMethod("GET", apiGateway); // GET 
 
     /// background lambda, event rule
     const backgroundLambda = new lambda.Function(this, "background-handler", {
